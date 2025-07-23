@@ -77,35 +77,39 @@ html {
   --table-row-even-bg: rgba(0,0,0,0.1);
 }
 
-/* Light Theme */
+/* --- Light Theme --- */
 html.light-theme {
-  --bg-color: #f0f4f8;
-  --bg-gradient: linear-gradient(to right, #e0eafc, #cfdef3);
-  --text-color: #1f2937;
-  --header-text: #1e40af;
-  --menu-btn-bg: rgba(30, 64, 175, 0.8);
-  --menu-btn-color: #ffffff;
-  --sidebar-bg: rgba(255, 255, 255, 0.7);
-  --sidebar-blur: blur(10px);
-  --sidebar-header: #1e40af;
-  --sidebar-btn-bg: rgba(30, 64, 175, 0.1);
-  --sidebar-btn-color: #1e40af;
-  --sidebar-btn-hover-bg: rgba(30, 64, 175, 0.2);
-  --logout-btn-bg: rgba(220, 38, 38, 0.1);
-  --logout-btn-color: #991b1b;
-  --logout-btn-hover-bg: rgba(220, 38, 38, 0.2);
-  --details-color: #4b5563;
-  --card-bg: #ffffff;
-  --card-border: #e5e7eb;
-  --table-header-color: #1e40af;
-  --modal-bg: #ffffff;
-  --modal-text-color: #1f2937;
-  --notification-bg: #e5e7eb;
-  --profile-detail-bg: #f3f4f6;
-  --balance-btn-bg: #e5e7eb;
-  --table-row-even-bg: #f3f4f6;
+  --bg-color: #0f2027; /* Base color for transition */
+  --text-color: #e0ffe6;
+  --header-text: #90ee90;
+  --menu-btn-bg: rgba(0, 100, 0, 0.6);
+  --menu-btn-color: #ccffcc;
+  --sidebar-bg: rgba(0, 50, 0, 0.35);
+  --sidebar-blur: blur(16px);
+  --sidebar-header: #90ee90;
+  --sidebar-btn-bg: rgba(255, 255, 255, 0.1);
+  --sidebar-btn-color: #c9ffd5;
+  --sidebar-btn-hover-bg: rgba(255, 255, 255, 0.2);
+  --logout-btn-bg: rgba(255, 0, 0, 0.2);
+  --logout-btn-color: #ffdddd;
+  --logout-btn-hover-bg: rgba(255, 0, 0, 0.4);
+  --details-color: #d6ffd6;
+  --card-bg: rgba(28, 40, 51, 0.7);
+  --card-border: rgba(144, 238, 144, 0.3);
+  --table-header-color: #90ee90;
+  --receipt-btn-bg: #c0392b;
+  --receipt-btn-hover-bg: #e74c3c;
+  --view-units-btn-bg: #2980b9;
+  --view-units-btn-hover-bg: #3498db;
+  --get-units-btn-bg: #c0392b;
+  --get-units-btn-hover-bg: #e74c3c;
+  --evaluate-btn-bg: #c0392b;
+  --evaluate-btn-hover-bg: #e74c3c;
+  --modal-bg: #bdc3c7;
+  --modal-text-color: #2c3e50;
+  --modal-ok-btn-bg: #3498db;
+  --modal-ok-btn-hover-bg: #2980b9;
 }
-
 /* --- Theme Application --- */
 body { background-color: var(--bg-color); color: var(--text-color); }
 html.light-theme body::after { opacity: 1; }
