@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KyU Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  height: 100%;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  overflow-x: hidden;
+  position: relative;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+  
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: var(--bg-gradient);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* --- Theme Variables --- */
+
+/* Dark Theme (Default) */
+html {
+  --bg-color: #121212;
+  --bg-gradient: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+  --text-color: #e0e0e0;
+  --header-text: #e0ffe6;
+  --menu-btn-bg: rgba(0, 100, 0, 0.6);
+  --menu-btn-color: #ccffcc;
+  --sidebar-bg: rgba(10, 25, 10, 0.35);
+  --sidebar-blur: blur(16px);
+  --sidebar-header: #90ee90;
+  --sidebar-btn-bg: rgba(255, 255, 255, 0.1);
+  --sidebar-btn-color: #c9ffd5;
+  --sidebar-btn-hover-bg: rgba(255, 255, 255, 0.2);
+  --logout-btn-bg: rgba(255, 0, 0, 0.2);
+  --logout-btn-color: #ffdddd;
+  --logout-btn-hover-bg: rgba(255, 0, 0, 0.4);
+  --details-color: #e0e0e0;
+  --card-bg: rgba(28, 40, 51, 0.5);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --table-header-color: #90ee90;
+  --receipt-btn-bg: #c0392b;
+  --receipt-btn-hover-bg: #e74c3c;
+  --view-units-btn-bg: #2980b9;
+  --view-units-btn-hover-bg: #3498db;
+  --get-units-btn-bg: #c0392b;
+  --get-units-btn-hover-bg: #e74c3c;
+  --evaluate-btn-bg: #c0392b;
+  --evaluate-btn-hover-bg: #e74c3c;
+  --modal-bg: #2c3e50;
+  --modal-text-color: #ecf0f1;
+  --modal-ok-btn-bg: #3498db;
+  --modal-ok-btn-hover-bg: #2980b9;
+  --notification-bg: rgba(0,0,0,0.2);
+  --profile-detail-bg: rgba(0,0,0,0.2);
+  --balance-btn-bg: rgba(255,255,255,0.1);
+  --table-row-even-bg: rgba(0,0,0,0.1);
+}
+
+/* Light Theme */
+html.light-theme {
+  --bg-color: #f0f4f8;
+  --bg-gradient: linear-gradient(to right, #e0eafc, #cfdef3);
+  --text-color: #1f2937;
+  --header-text: #1e40af;
+  --menu-btn-bg: rgba(30, 64, 175, 0.8);
+  --menu-btn-color: #ffffff;
+  --sidebar-bg: rgba(255, 255, 255, 0.7);
+  --sidebar-blur: blur(10px);
+  --sidebar-header: #1e40af;
+  --sidebar-btn-bg: rgba(30, 64, 175, 0.1);
+  --sidebar-btn-color: #1e40af;
+  --sidebar-btn-hover-bg: rgba(30, 64, 175, 0.2);
+  --logout-btn-bg: rgba(220, 38, 38, 0.1);
+  --logout-btn-color: #991b1b;
+  --logout-btn-hover-bg: rgba(220, 38, 38, 0.2);
+  --details-color: #4b5563;
+  --card-bg: #ffffff;
+  --card-border: #e5e7eb;
+  --table-header-color: #1e40af;
+  --modal-bg: #ffffff;
+  --modal-text-color: #1f2937;
+  --notification-bg: #e5e7eb;
+  --profile-detail-bg: #f3f4f6;
+  --balance-btn-bg: #e5e7eb;
+  --table-row-even-bg: #f3f4f6;
+}
+
+/* --- Theme Application --- */
+body { background-color: var(--bg-color); color: var(--text-color); }
+html.light-theme body::after { opacity: 1; }
+
+.menu-button { background: var(--menu-btn-bg); color: var(--menu-btn-color); }
+.sidebar { background: var(--sidebar-bg); backdrop-filter: var(--sidebar-blur); -webkit-backdrop-filter: var(--sidebar-blur); box-shadow: 2px 0 12px rgba(0, 0, 0, 0.3); }
+.sidebar h2 { color: var(--sidebar-header); }
+.sidebar button { background: var(--sidebar-btn-bg); color: var(--sidebar-btn-color); }
+.sidebar button:hover { background: var(--sidebar-btn-hover-bg); }
+.logout-section button { background: var(--logout-btn-bg); color: var(--logout-btn-color); }
+.logout-section button:hover { background: var(--logout-btn-hover-bg); }
+.main-footer-credit { color: var(--details-color); }
+.card {
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 2rem;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid var(--card-border);
+}
+.card-header h2 { color: var(--header-text); }
+.main-header h1 { color: var(--header-text); }
+
+/* --- Theme Switcher --- */
+.theme-switcher { position: relative; display: inline-block; width: 60px; height: 34px; }
+.theme-switcher input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #4A4A4A; transition: .4s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path d='M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.106a.75.75 0 010 1.06l-1.591 1.59a.75.75 0 11-1.06-1.06l1.59-1.59a.75.75 0 011.06 0zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5h2.25a.75.75 0 01.75.75zM17.836 17.836a.75.75 0 01-1.06 0l-1.59-1.591a.75.75 0 111.06-1.06l1.59 1.59a.75.75 0 010 1.061zM12 18a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.836a.75.75 0 010-1.06l1.59-1.59a.75.75 0 011.061 1.06l-1.59 1.59a.75.75 0 01-1.06 0zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.106 6.106a.75.75 0 011.06 0l1.591 1.59a.75.75 0 01-1.06 1.06l-1.59-1.59a.75.75 0 010-1.06z'/></svg>"); background-repeat: no-repeat; background-position: center; }
+input:checked + .slider { background-color: #3b82f6; }
+input:checked + .slider:before { transform: translateX(26px); background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path fill-rule='evenodd' d='M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 004.472-.69a.75.75 0 11.584 1.362A10.47 10.47 0 0118 18a10.5 10.5 0 01-10.5-10.5 10.47 10.47 0 01.69-4.472.75.75 0 01.819-.162z' clip-rule='evenodd' /></svg>"); }
+
+/* --- HEADER STYLES --- */
+.main-header { display: flex; justify-content: center; align-items: center; position: relative; padding: 20px 20px 0 20px; margin-bottom: 30px; transition: margin-left 0.3s ease; }
+.header-title-container { display: flex; align-items: center; gap: 15px; }
+.header-logo { height: 50px; }
+.main-header .theme-switcher { position: absolute; right: 20px; }
+
+/* --- Sidebar & Menu Button Styles --- */
+.menu-button { position: fixed; top: 1rem; left: 1rem; border: none; padding: 0.5rem 1rem; border-radius: 10px; font-size: 1.2rem; cursor: pointer; z-index: 1100; }
+.sidebar { position: fixed; left: -250px; top: 0; height: 100vh; width: 250px; padding: 2rem 1rem; transition: left 0.3s ease; z-index: 1000; text-align: center; display: flex; flex-direction: column; }
+.sidebar.active { left: 0; }
+.sidebar h2 { margin-bottom: 2rem; }
+.sidebar-nav { flex-grow: 1; }
+.sidebar button { display: block; border: none; width: 100%; margin-bottom: 1rem; padding: 0.6rem 1rem; font-size: 1rem; font-weight: 500; border-radius: 8px; cursor: pointer; backdrop-filter: blur(4px); text-align: left; }
+.submenu { margin-left: 1rem; margin-bottom: 1rem; display: none; }
+.submenu button { font-size: 0.95rem; }
+.logout-section { margin-top: auto; }
+.logout-section button { width: 100%; text-align: center; }
+
+/* --- WRAPPER FOR HEADER AND MAIN CONTENT --- */
+.wrapper { display: flex; flex-direction: column; flex-grow: 1; transition: margin-left 0.3s ease; }
+
+/* --- MAIN CONTENT STYLES --- */
+.main-content { flex-grow: 1; padding: 0 2rem 2rem 2rem; }
+.content-section { display: none; }
+.content-section.active { display: block; animation: fadeIn 0.5s ease-in-out; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+.card-header h2 { font-size: 1.8rem; }
+.print-button, .new-requisition-btn { background-color: transparent; border: 1px solid var(--sidebar-btn-color); color: var(--sidebar-btn-color); padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 500; transition: background-color 0.2s, color 0.2s; }
+.print-button:hover, .new-requisition-btn:hover { background-color: var(--sidebar-btn-hover-bg); }
+.print-button .fa-print { margin-right: 0.5rem; }
+.new-requisition-btn { background-color: var(--receipt-btn-bg); border-color: var(--receipt-btn-bg); color: white; }
+.new-requisition-btn:hover { background-color: var(--receipt-btn-hover-bg); }
+
+/* --- TABLES (Refactored) --- */
+.table-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+.data-table th, .data-table td { padding: 1rem; border-bottom: 1px solid var(--card-border); text-align: left; }
+.data-table th { color: var(--table-header-color); text-transform: uppercase; font-size: 0.8rem; font-weight: 600; }
+.data-table tbody tr:last-child td { border-bottom: none; }
+.amount-col { text-align: right; font-family: monospace; font-size: 1rem; }
+.action-col { text-align: center; }
+.statement-table tfoot td { padding-top: 1.5rem; font-weight: 600; color: var(--header-text); border-top: 2px solid var(--card-border); }
+.receipts-table tfoot td { border-top: 2px solid var(--card-border); text-align: right; font-weight: 600; font-size: 1.1rem; padding: 1.5rem 1rem; color: var(--header-text); }
+.requisitions-table .no-records-row td { text-align: center; color: var(--receipt-btn-bg); font-style: italic; padding: 2rem; }
+.results-table .year-header td { background-color: rgba(0,0,0,0.1); font-weight: bold; color: var(--header-text); padding: 0.75rem 1rem; border-bottom: 2px solid var(--card-border); }
+.results-table .unit-header-row th { border-bottom: 2px solid var(--card-border); }
+.print-receipt-btn { background-color: var(--receipt-btn-bg); color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer; transition: background-color 0.2s; }
+.print-receipt-btn:hover { background-color: var(--receipt-btn-hover-bg); }
+.view-units-btn { background-color: var(--view-units-btn-bg); color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer; transition: background-color 0.2s; }
+.view-units-btn:hover { background-color: var(--view-units-btn-hover-bg); }
+.evaluate-btn { background-color: var(--evaluate-btn-bg); color: white; border: none; padding: 0.4rem 1.2rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer; transition: background-color 0.2s; }
+.evaluate-btn:hover { background-color: var(--evaluate-btn-hover-bg); }
+
+/* --- FORMS --- */
+.form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+.course-registration-form { display: flex; align-items: flex-end; gap: 1.5rem; flex-wrap: wrap; margin-top: 1rem; }
+.course-registration-form label { font-size: 0.9rem; font-weight: 500; color: var(--details-color); }
+.course-registration-form select { background-color: rgba(0,0,0,0.2); color: var(--text-color); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.6rem 1rem; min-width: 200px; }
+.get-units-btn { background-color: var(--get-units-btn-bg); color: white; border: none; padding: 0.6rem 1.5rem; border-radius: 8px; font-size: 0.9rem; cursor: pointer; transition: background-color 0.2s; }
+.get-units-btn:hover { background-color: var(--get-units-btn-hover-bg); }
+
+/* --- Exam Card & Clearance --- */
+.verification-section { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--card-border); text-align: center; }
+.verification-section h3 { font-size: 1.2rem; color: var(--header-text); margin-bottom: 1rem; }
+.verification-status { font-size: 1rem; margin-bottom: 1.5rem; }
+.verification-status.valid { color: #2ecc71; }
+.verification-status.invalid { color: #e74c3c; }
+.clearance-form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+.clearance-form-grid .form-group label { font-weight: 600; margin-bottom: 0.5rem; display: block; }
+.clearance-form-grid .form-group span { display: block; padding: 0.75rem; background-color: var(--profile-detail-bg); border: 1px solid var(--card-border); border-radius: 8px; }
+.clearance-form-footer { border-top: 1px solid var(--card-border); margin-top: 2rem; padding-top: 1.5rem; text-align: center; }
+.clearance-form-footer p { font-size: 0.85rem; color: var(--details-color); margin-top: 1.5rem; }
+.make-request-btn { background-color: var(--receipt-btn-bg); color: white; border: none; padding: 0.7rem 2rem; border-radius: 8px; font-size: 1rem; cursor: pointer; transition: background-color 0.2s; }
+.make-request-btn:hover { background-color: var(--receipt-btn-hover-bg); }
+
+/* --- Modal Styles --- */
+.modal-overlay { display: none; position: fixed; z-index: 1200; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
+.modal-content { background-color: var(--modal-bg); color: var(--modal-text-color); margin: auto; padding: 1.5rem; border-radius: 10px; width: 90%; max-width: 350px; text-align: center; animation: fadeIn 0.3s; border-top: 5px solid #f39c12; }
+.modal-icon { width: 40px; height: 40px; border: 2px solid #f39c12; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.2rem; font-weight: bold; color: #f39c12; }
+.modal-content h2 { margin-bottom: 0.8rem; font-size: 1.2rem; }
+.modal-content p { margin-bottom: 1.5rem; font-size: 0.9rem; line-height: 1.5; }
+.modal-ok-btn { background-color: var(--modal-ok-btn-bg); color: white; border: none; padding: 0.6rem 1.5rem; border-radius: 8px; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: background-color 0.2s; }
+.modal-ok-btn:hover { background-color: var(--modal-ok-btn-hover-bg); }
+
+/* --- Change Password Section Styles --- */
+.password-card-container { display: flex; justify-content: center; align-items: center; padding-top: 2rem; }
+.password-card { width: 100%; max-width: 400px; }
+.password-card h2 { text-align: left; margin-bottom: 2rem; font-size: 1.8rem; }
+#password-change-form .form-group { margin-bottom: 1.5rem; position: relative; }
+#password-change-form .form-group:last-of-type { margin-bottom: 2rem; }
+#password-change-form label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--details-color); font-size: 0.9rem; }
+#password-change-form input[type="password"] { width: 100%; padding: 0.75rem; background-color: var(--profile-detail-bg); border: 1px solid var(--card-border); border-radius: 6px; color: var(--text-color); font-size: 1rem; }
+#password-change-form input[type="password"]:focus { outline: none; border-color: var(--sidebar-header); }
+#confirm-password.no-match { border-color: #e74c3c !important; }
+#confirm-password.match { border-color: #2ecc71 !important; }
+.strength-meter { height: 3px; width: 100%; background-color: rgba(255, 255, 255, 0.1); border-radius: 3px; margin-top: 4px; overflow: hidden; }
+#strength-bar { height: 100%; width: 0%; border-radius: 3px; transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out; }
+.strength-text, .match-text { font-size: 0.85rem; height: 1.2em; margin-top: 0.5rem; margin-left: 2px; }
+.strength-text.weak { color: #e74c3c; }
+.strength-text.medium { color: #f39c12; }
+.strength-text.strong { color: #2ecc71; }
+.match-text.match { color: #2ecc71; }
+.match-text.no-match { color: #e74c3c; }
+.change-password-btn { width: 100%; padding: 0.8rem; border: none; border-radius: 8px; background-color: var(--view-units-btn-bg); color: white; font-size: 1rem; font-weight: 500; cursor: pointer; transition: background-color 0.2s, opacity 0.2s; margin-top: 1rem; }
+.change-password-btn:hover:not(:disabled) { background-color: var(--view-units-btn-hover-bg); }
+.change-password-btn:disabled { background-color: rgba(85, 85, 85, 0.5); color: rgba(255, 255, 255, 0.5); cursor: not-allowed; }
+
+/* --- Footer Styles --- */
+.main-footer-credit { text-align: center; padding: 1rem; font-size: 0.9rem; transition: margin-left 0.3s ease; flex-shrink: 0; }
+.main-footer-credit .fa-heart { color: #ff4c4c; }
+.main-footer-credit .fa-coffee { color: #ffcc00; }
+
+/* --- DASHBOARD SECTION STYLES --- */
+.dashboard-grid { display: flex; flex-wrap: wrap; gap: 2rem; }
+.profile-box, .balance-card { flex: 1 1 100%; }
+@media (min-width: 1024px) {
+  .profile-box { flex: 6; }
+  .balance-card { flex: 4; }
+}
+.year-progress { margin-top: 1rem; width: 80%; margin-left: auto; margin-right: auto; }
+.year-progress-info { display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--details-color); margin-bottom: 0.5rem; }
+.progress-bar-container { width: 100%; height: 10px; background-color: rgba(255, 255, 255, 0.1); border-radius: 5px; overflow: hidden; }
+.progress-bar-fill { width: 50%; height: 100%; background: linear-gradient(to right, #90ee90, #00ffae); border-radius: 5px; animation: fill-progress 2s ease-in-out forwards; }
+@keyframes fill-progress { from { width: 0%; } to { width: 50%; } }
+
+.profile-box { display: flex; flex-wrap: wrap; }
+.profile-left { flex: 1 1 100%; display: flex; flex-direction: column; align-items: center; border-bottom: 1px solid var(--card-border); padding-bottom: 2rem; margin-bottom: 2rem; }
+@media (min-width: 768px) {
+  .profile-left { flex: 4; border-right: 1px solid var(--card-border); border-bottom: none; padding-right: 2rem; margin-bottom: 0; }
+}
+.profile-img img { width: 180px; height: 180px; border-radius: 50%; border: 4px solid var(--sidebar-header); object-fit: cover; }
+.profile-name { margin-top: 1rem; text-align: center; }
+.profile-name h2 { font-size: 1.6rem; margin: 0; color: var(--header-text); }
+.profile-name p { font-size: 1rem; margin: 0.3rem 0; color: var(--details-color); }
+
+.profile-right { flex: 1 1 100%; }
+@media (min-width: 768px) {
+  .profile-right { flex: 6; padding-left: 2rem; }
+}
+.profile-details-table { display: grid; grid-template-columns: 1fr; gap: 0.8rem; }
+@media (min-width: 768px) {
+  .profile-details-table { grid-template-columns: repeat(2, 1fr); }
+}
+.profile-details-table div { padding: 0.8rem 1.2rem; background: var(--profile-detail-bg); border-radius: 8px; color: var(--text-color); font-size: 1rem; }
+
+.balance-card { display: flex; flex-direction: column; align-items: center; }
+.balance-title { display: flex; align-items: center; font-size: 22px; font-weight: bold; margin-bottom: 20px; color: var(--header-text); }
+.balance-title i { margin-right: 10px; color: var(--sidebar-header); }
+.progress-container { width: 100%; background: rgba(255, 255, 255, 0.1); border-radius: 20px; height: 20px; overflow: hidden; margin-bottom: 20px; }
+.progress-bar { height: 100%; background: linear-gradient(to right, #00ffae, #0077ff); width: 70%; }
+.balance-buttons { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-bottom: 20px; }
+.balance-buttons button { background: var(--balance-btn-bg); color: var(--text-color); border: none; padding: 12px; border-radius: 12px; font-weight: 600; cursor: default; }
+.pay-buttons { display: flex; gap: 10px; width: 100%; }
+.pay-buttons button { flex: 1; padding: 12px; font-weight: bold; border: none; border-radius: 12px; background-color: var(--view-units-btn-bg); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.pay-buttons button i { margin-right: 8px; }
+.view-history { width: 100%; text-align: center; margin-top: 1rem; }
+.view-history button { padding: 10px 20px; background-color: transparent; border: 1px solid var(--sidebar-btn-color); color: var(--sidebar-btn-color); border-radius: 10px; cursor: pointer; }
+
+.dashboard-widgets { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 2rem; }
+.timetable-widget, .side-widget-container { flex: 1 1 100%; }
+@media (min-width: 1024px) {
+  .timetable-widget { flex: 5; }
+  .side-widget-container { flex: 2.5; }
+}
+.timetable-widget {
+    display: flex;
+    flex-direction: column;
+    min-height: 500px;
+    overflow: hidden;
+}
+#timetable { width: 100%; border-collapse: collapse; table-layout: fixed; }
+#timetable th, #timetable td { padding: 15px; text-align: left; height: 60px; overflow-wrap: break-word; word-break: break-word; }
+#timetable th { color: var(--table-header-color); text-transform: uppercase; }
+#timetable tr { border-bottom: 1px solid var(--card-border); }
+#timetable tr:nth-child(even) { background-color: var(--table-row-even-bg); }
+.delete-icon { color: #ff4c4c; cursor: pointer; margin-left: 10px; }
+.update-icon { color: var(--sidebar-btn-color); cursor: pointer; }
+.add-row-btn { padding: 10px 15px; background-color: var(--view-units-btn-bg); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; align-self: flex-start; }
+
+.side-widget-container { display: flex; flex-direction: column; gap: 20px; min-height: 500px; }
+.portal-widget, .notifications-widget {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.portal-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+.portal-buttons::-webkit-scrollbar, .notification-list::-webkit-scrollbar, .table-wrapper::-webkit-scrollbar { width: 6px; }
+.portal-buttons::-webkit-scrollbar-thumb, .notification-list::-webkit-scrollbar-thumb, .table-wrapper::-webkit-scrollbar-thumb { background-color: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+.portal-buttons button { background-color: var(--sidebar-btn-bg); border: none; padding: 12px; border-radius: 10px; color: var(--sidebar-btn-color); font-weight: 600; text-align: left; cursor: pointer; backdrop-filter: blur(10px); }
+.portal-buttons button:hover { background-color: var(--sidebar-btn-hover-bg); }
+.notification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+.notification-box { background-color: var(--notification-bg); padding: 15px; border-radius: 10px; color: var(--text-color); font-size: 14px; line-height: 1.4; }
+
+/* --- Responsive Styles --- */
+@media (max-width: 992px) {
+  .wrapper, .main-footer-credit { margin-left: 0 !important; /* Important to override desktop styles */ }
+}
+@media (max-width: 768px) {
+  .sidebar { width: 220px; left: -220px; }
+  .wrapper .main-header { margin-left: 0; }
+  .main-header { justify-content: flex-end; }
+  .header-title-container { display: none; }
+}
+@media (max-width: 480px) {
+    .card { padding: 1.5rem; }
+    .card-header h2 { font-size: 1.5rem; }
+    .print-button { padding: 0.4rem 0.8rem; font-size: 0.9rem;}
+    .data-table { font-size: 0.85rem; }
+    .data-table th, .data-table td { padding: 0.75rem; }
+    .amount-col { font-size: 0.9rem; }
+}
+
+/* Print Specific Styles */
+@media print {
+    body * { visibility: hidden; }
+    #exam-cards, #exam-cards * { visibility: visible; }
+    #exam-cards .card { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none !important; border: 1px solid #ccc !important; color: #000 !important; background: #fff !important; }
+    .card-header h2, .exam-card-table th, .exam-card-table td { color: #000 !important; }
+    .print-button, .print-receipt-btn, .view-units-btn, .get-units-btn, .evaluate-btn, .verification-section { display: none; }
+    .sidebar, .menu-button, .main-header, .main-footer-credit { display: none; }
+}
+
+</style>
+
+<script>
+// Prevent theme flash
+(function() {
+  try {
+    if (localStorage.getItem('theme') === 'light') {
+      document.documentElement.classList.add('light-theme');
+    }
+  } catch (e) { console.error(e); }
+})();
+</script>
+
+</head>
+<body>
+
+<button class="menu-button" onclick="toggleSidebar()">
+  <i class="fas fa-bars"></i>
+</button>
+
+<aside class="sidebar" id="sidebar">
+  <h2>Menu</h2>
+  <nav class="sidebar-nav">
+    <button onclick="showContent('dashboard')">Dashboard</button>
+    <button onclick="toggleSubmenu('financials')">Financials</button>
+    <div class="submenu" id="submenu-financials">
+        <button onclick="showContent('fee-statement')">Fee Statements</button>
+        <button onclick="showContent('payment-receipts')">Payment Receipts</button>
+    </div>
+    <button onclick="toggleSubmenu('academics')">Academics</button>
+    <div class="submenu" id="submenu-academics">
+      <button onclick="showContent('register-units')">Register Units</button>
+      <button onclick="showContent('provisional-results')">Provisional Results</button>
+      <button onclick="showContent('lecturer-evaluation')">Lecturers Evaluation</button>
+      <button onclick="showContent('exam-cards')">Exam Cards</button>
+      <button onclick="showContent('academic-requisitions')">Academic Requisitions</button>
+    </div>
+    <button onclick="toggleSubmenu('clearance')">Student Clearance</button>
+    <div class="submenu" id="submenu-clearance">
+        <button onclick="showContent('clearance-request')">Clearance Request</button>
+    </div>
+    <button onclick="toggleSubmenu('settings')">Settings</button>
+    <div class="submenu" id="submenu-settings">
+        <button onclick="showContent('change-password')">Change Password</button>
+    </div>
+  </nav>
+  <div class="logout-section">
+    <button onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+  </div>
+</aside>
+
+<div class="wrapper">
+    <header class="main-header">
+      <div class="header-title-container">
+        <img src="images/logo.png" alt="KyU Logo" class="header-logo" onerror="this.style.display='none'">
+        <h1>KyU Student Dashboard</h1>
+      </div>
+      <label class="theme-switcher">
+        <input type="checkbox" id="theme-toggle">
+        <span class="slider"></span>
+      </label>
+    </header>
+
+    <main class="main-content">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="content-section active">
+            <div class="dashboard-grid">
+              <div class="card profile-box">
+                <div class="profile-left">
+                  <div class="profile-img"><img src="images/profile.jpg" alt="Student Photo" onerror="this.src='https://placehold.co/180x180/e0e0e0/000000?text=Student'"/></div>
+                  <div class="profile-name">
+                    <h2>KIHIU JOSHUA MUHORO</h2>
+                    <p>Admission No: CT101/G/19578/23</p>
+                    <div class="year-progress">
+                      <div class="year-progress-info">
+                        <span>Year 2</span>
+                        <span>50% Complete</span>
+                      </div>
+                      <div class="progress-bar-container">
+                        <div class="progress-bar-fill"></div>
+                    </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="profile-right">
+                  <div class="profile-details-table">
+                    <div><strong>ID/ Passport:</strong> 42219052</div>
+                    <div><strong>Full Name:</strong> KIHIU JOSHUA MUHORO</div>
+                    <div><strong>Gender:</strong> Male</div>
+                    <div><strong>Date of Birth:</strong> 16/02/2004</div>
+                    <div><strong>Phone Number:</strong> 0114113788</div>
+                    <div><strong>Email:</strong> joshuamuhoro58@gmail.com</div>
+                    <div><strong>Postal Address:</strong> KIAMBU, GITHIGA IKIN</div>
+                    <div><strong>KyU Email:</strong> joshuamuhoro58@gmail.com</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card balance-card">
+                <div class="balance-title"><i class="fas fa-wallet"></i> Current Balance</div>
+                <div class="progress-container"><div class="progress-bar"></div></div>
+                <div class="balance-buttons">
+                  <button>Total Billed: KES 120,000</button>
+                  <button>Total Paid: KES 84,000</button>
+                  <button>Current Balance: KES 36,000</button>
+                </div>
+                <div class="pay-buttons">
+                  <button><i class="fab fa-cc-visa"></i> Pay with Bank</button>
+                  <button><i class="fab fa-apple-pay"></i> Pay with M-Pesa</button>
+                </div>
+                <div class="view-history"><button><i class="fas fa-history"></i> View Payment History</button></div>
+              </div>
+            </div>
+
+            <div class="dashboard-widgets">
+              <div class="card timetable-widget">
+                <h2>Timetable</h2>
+                <div class="table-wrapper">
+                  <table id="timetable">
+                    <thead>
+                      <tr><th>Day</th><th>Time</th><th>Unit</th><th>Venue</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Mon</td><td>8:00 AM - 10:00 AM</td><td>ICS 2411</td><td>Hall A</td><td><i class="fas fa-pencil-alt update-icon" onclick="toggleEdit(this)"></i><i class="fas fa-trash delete-icon" onclick="deleteRow(this)"></i></td></tr>
+                      <tr><td>Tue</td><td>10:00 AM - 12:00 PM</td><td>ICS 2307</td><td>Lab 2</td><td><i class="fas fa-pencil-alt update-icon" onclick="toggleEdit(this)"></i><i class="fas fa-trash delete-icon" onclick="deleteRow(this)"></i></td></tr>
+                      <tr><td>Wed</td><td>12:00 PM - 2:00 PM</td><td>ICS 2203</td><td>Lab 3</td><td><i class="fas fa-pencil-alt update-icon" onclick="toggleEdit(this)"></i><i class="fas fa-trash delete-icon" onclick="deleteRow(this)"></i></td></tr>
+                      <tr><td>Thu</td><td>9:00 AM - 11:00 AM</td><td>ICS 2210</td><td>Lecture Room 5</td><td><i class="fas fa-pencil-alt update-icon" onclick="toggleEdit(this)"></i><i class="fas fa-trash delete-icon" onclick="deleteRow(this)"></i></td></tr>
+                      <tr><td>Fri</td><td>2:00 PM - 4:00 PM</td><td>ICS 2310</td><td>Lecture Room 2</td><td><i class="fas fa-pencil-alt update-icon" onclick="toggleEdit(this)"></i><i class="fas fa-trash delete-icon" onclick="deleteRow(this)"></i></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <button class="add-row-btn" onclick="addRow()">Add New Row</button>
+              </div>
+
+              <div class="side-widget-container">
+                <div class="card portal-widget">
+                  <h2>Other Portals & Services</h2>
+                  <div class="portal-buttons">
+                    <button>Official Portal</button>
+                    <button>Masomo Portal</button>
+                    <button>Library</button>
+                    <button>Media Center</button>
+                    <button>Hostel Booking</button>
+                    <button>Past Papers</button>
+                    <button>Research</button>
+                    <button>Students</button>
+                  </div>
+                </div>
+                <div class="card notifications-widget">
+                  <h2>Notifications</h2>
+                  <div class="notification-list">
+                    <div class="notification-box">📅 Exam Timetable Released</div>
+                    <div class="notification-box">📌 Project Submission Deadline: 31st July</div>
+                    <div class="notification-box">🛠 Student Portal Maintenance: Saturday 10 PM</div>
+                    <div class="notification-box">🎉 Clubs and Societies Day: Monday 9 AM</div>
+                    <div class="notification-box">📢 Library Closed on Public Holiday</div>
+                    <div class="notification-box">🧪 Lab Reports Due This Week</div>
+                    <div class="notification-box">🚌 Transport Booking Now Open</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </section>
+
+        <!-- Fee Statement Section -->
+        <section id="fee-statement" class="content-section">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Fee Statement</h2>
+                    <button class="print-button" onclick="window.print()">
+                        <i class="fas fa-print"></i> Print Fee Statement
+                    </button>
+                </div>
+                <div class="table-wrapper">
+                    <table class="statement-table data-table">
+                        <thead>
+                            <tr>
+                                <th>Posting Date</th>
+                                <th>Ref #</th>
+                                <th>Description</th>
+                                <th class="amount-col">Debit Amount</th>
+                                <th class="amount-col">Credit Amount</th>
+                                <th class="amount-col">Running Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2024-01-15</td>
+                                <td>INV-00123</td>
+                                <td>Semester 1 Tuition Fees</td>
+                                <td class="amount-col">55,000.00</td>
+                                <td class="amount-col"></td>
+                                <td class="amount-col">55,000.00</td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-20</td>
+                                <td>RCPT-00456</td>
+                                <td>Fee Payment</td>
+                                <td class="amount-col"></td>
+                                <td class="amount-col">30,000.00</td>
+                                <td class="amount-col">25,000.00</td>
+                            </tr>
+                            <tr>
+                                <td>2024-02-05</td>
+                                <td>INV-00128</td>
+                                <td>Hostel Fees</td>
+                                <td class="amount-col">12,000.00</td>
+                                <td class="amount-col"></td>
+                                <td class="amount-col">37,000.00</td>
+                            </tr>
+                             <tr>
+                                <td>2024-02-10</td>
+                                <td>RCPT-00499</td>
+                                <td>Fee Payment</td>
+                                <td class="amount-col"></td>
+                                <td class="amount-col">25,000.00</td>
+                                <td class="amount-col">12,000.00</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="5" style="text-align:right; font-weight:bold;">Current Balance:</td>
+                                <td class="amount-col">12,000.00</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Payment Receipts Section -->
+        <section id="payment-receipts" class="content-section">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Payment Receipts</h2>
+                </div>
+                <div class="table-wrapper">
+                    <table class="receipts-table data-table">
+                        <thead>
+                            <tr>
+                                <th>Receipt No.</th>
+                                <th>Date</th>
+                                <th>Payment Mode</th>
+                                <th class="amount-col">Amount</th>
+                                <th class="action-col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>RCPT-00456</td>
+                                <td>2024-01-20</td>
+                                <td>Bank Deposit</td>
+                                <td class="amount-col">30,000.00</td>
+                                <td class="action-col"><button class="print-receipt-btn">Print</button></td>
+                            </tr>
+                            <tr>
+                                <td>RCPT-00499</td>
+                                <td>2024-02-10</td>
+                                <td>M-Pesa</td>
+                                <td class="amount-col">25,000.00</td>
+                                <td class="action-col"><button class="print-receipt-btn">Print</button></td>
+                            </tr>
+                        </tbody>
+                         <tfoot>
+                            <tr>
+                                <td colspan="3">Total Paid:</td>
+                                <td class="amount-col">55,000.00</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Register Units Section -->
+        <section id="register-units" class="content-section">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Registration List</h2>
+                </div>
+                <div class="table-wrapper">
+                    <table class="registration-list-table data-table">
+                        <thead>
+                            <tr>
+                                <th class="action-col">Action</th>
+                                <th>Stage</th>
+                                <th>Semester</th>
+                                <th>Unit Taken</th>
+                                <th>Settlement Type</th>
+                                <th>Registration Date</th>
+                                <th>Register For</th>
+                                <th class="amount-col">Total Billed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           <tr>
+                                <td class="action-col"><button class="view-units-btn">View Units</button></td>
+                                <td>Y2S2</td>
+                                <td>SEM2 23/24</td>
+                                <td>7</td>
+                                <td>Normal</td>
+                                <td>2024-01-10</td>
+                                <td>Normal</td>
+                                <td class="amount-col">55,000.00</td>
+                           </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card" style="margin-top: 2rem;">
+                <div class="card-header">
+                    <h2>Course Registration</h2>
+                </div>
+                <p><strong>Registration Semester:</strong> SEM1 24/25</p>
+                <p style="margin-top: 1rem; margin-bottom: 1.5rem; line-height: 1.6;">
+                    Click on the button "Get Courses to Register". Select your Courses and click button "Add Selected Courses to the Basket". Confirm them then Complete registration by clicking button "Complete Registration". You can view Proforma Invoice by clicking button "View Proforma Invoice".
+                </p>
+                <div class="course-registration-form">
+                    <div class="form-group">
+                        <label for="registration-type">Registration Type:</label>
+                        <select id="registration-type" name="registration-type">
+                            <option>Supplementary</option>
+                            <option>Normal</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="stage">Stage:</label>
+                        <select id="stage" name="stage">
+                            <option>--select Stage--</option>
+                            <option>Y1S1</option>
+                            <option>Y1S2</option>
+                            <option>Y2S1</option>
+                            <option>Y2S2</option>
+                        </select>
+                    </div>
+                    <button class="get-units-btn">Get Units</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Provisional Results Section -->
+        <section id="provisional-results" class="content-section">
+            <div class="card">
+                 <div class="card-header">
+                    <h2>Provisional Results</h2>
+                    <button class="print-button" onclick="window.print()">
+                        <i class="fas fa-print"></i> Print Results
+                    </button>
+                </div>
+                <div class="table-wrapper">
+                    <table class="results-table data-table">
+                        <tbody>
+                            <tr class="year-header">
+                                <td colspan="4">Year 1 Semester 1</td>
+                            </tr>
+                            <tr class="unit-header-row">
+                                <th>Unit Code</th>
+                                <th>Unit Name</th>
+                                <th>Score</th>
+                                <th>Grade</th>
+                            </tr>
+                            <tr>
+                                <td>SPC 2101</td>
+                                <td>Intro to Programming</td>
+                                <td>75</td>
+                                <td>A</td>
+                            </tr>
+                             <tr class="year-header">
+                                <td colspan="4">Year 1 Semester 2</td>
+                            </tr>
+                            <tr class="unit-header-row">
+                                <th>Unit Code</th>
+                                <th>Unit Name</th>
+                                <th>Score</th>
+                                <th>Grade</th>
+                            </tr>
+                            <tr>
+                                <td>SPC 2105</td>
+                                <td>Data Structures</td>
+                                <td>68</td>
+                                <td>B</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Lecturer Evaluation Section -->
+        <section id="lecturer-evaluation" class="content-section">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Lecturer's Evaluation</h2>
+                </div>
+                <div class="table-wrapper">
+                    <table class="evaluation-table data-table">
+                        <thead>
+                            <tr>
+                                <th class="action-col">Action</th>
+                                <th>Unit Code</th>
+                                <th>Unit Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="action-col"><button class="evaluate-btn">Evaluate</button></td>
+                                <td>SPM 2280</td>
+                                <td>Linear Algebra</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Exam Cards Section -->
+        <section id="exam-cards" class="content-section">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Exam Card</h2>
+                </div>
+                <div class="table-wrapper">
+                    <table class="exam-card-table data-table">
+                        <thead>
+                            <tr>
+                                <th>Unit Code</th>
+                                <th>Unit Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>SPC 2201</td>
+                                <td>Operating Systems II</td>
+                            </tr>
+                            <tr>
+                                <td>SPC 2202</td>
+                                <td>Object Oriented Analysis & Design</td>
+                            </tr>
+                            <tr>
+                                <td>SPC 2203</td>
+                                <td>Database Management Systems</td>
+                            </tr>
+                            <tr>
+                                <td>SPC 2205</td>
+                                <td>Internet Application Programming</td>
+                            </tr>
+                            <tr>
+                                <td>SPC 2207</td>
+                                <td>Digital Logic</td>
+                            </tr>
+                            <tr>
+                                <td>SPM 2181</td>
+                                <td>Differential Calculus</td>
+                            </tr>
+                             <tr>
+                                <td>UCO 2100</td>
+                                <td>Communication and Information Literacy Skills</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="verification-section">
+                    <h3>COD Verification</h3>
+                    <p class="verification-status valid">Status: Valid for Printing</p>
+                    <button class="print-button" onclick="window.print()">
+                        <i class="fas fa-print"></i> Print Exam Card
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Academic Requisitions Section -->
+        <section id="academic-requisitions" class="content-section">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Academic Requisitions</h2>
+                    <button class="new-requisition-btn">New Requisition</button>
+                </div>
+                <div class="table-wrapper">
+                    <table class="requisitions-table data-table">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Date</th>
+                                <th>Requisition Type</th>
+                                <th>Semester</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="no-records-row">
+                                <td colspan="6">No Records Found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Student Clearance Section -->
+        <section id="clearance-request" class="content-section">
+            <div class="card">
+                <div class="card-header">
+                    <h2>New Clearance Form</h2>
+                </div>
+                <div class="clearance-form-grid">
+                    <div class="form-group">
+                        <label>Registration No:</label>
+                        <span>CT101/G/19576/23</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Full Name:</label>
+                        <span>KIHU JOSHUA MUHORO</span>
+                    </div>
+                    <div class="form-group">
+                        <label>National ID:</label>
+                        <span>41229922</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Address:</label>
+                        <span>KAHUHO GITHIGA KBU</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Telephone:</label>
+                        <span>0748372769</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <span>joshuamuhoro9@gmail.com</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Programme:</label>
+                        <span>CT101.0</span>
+                    </div>
+                </div>
+                <div class="clearance-form-footer">
+                    <button class="make-request-btn">Make Request</button>
+                    <p>© 2015 - My ASP.NET Application</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Change Password Section -->
+        <section id="change-password" class="content-section">
+            <div class="password-card-container">
+                <div class="card password-card">
+                    <h2>New Password</h2>
+                    <form id="password-change-form">
+                        <div class="form-group">
+                            <label for="new-password">Password</label>
+                            <input type="password" id="new-password" name="new-password" placeholder="New password" autocomplete="new-password">
+                            <div class="strength-meter">
+                               <div id="strength-bar"></div>
+                            </div>
+                            <p id="strength-text" class="strength-text"></p>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm-password">Confirm Password</label>
+                            <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm password" autocomplete="new-password">
+                            <p id="match-text" class="match-text"></p>
+                        </div>
+                        <button type="submit" id="change-password-btn" class="change-password-btn" disabled>Change Password</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<footer class="main-footer-credit">
+  <p>Copyright &copy; 2025 Joshua Muhoro. Made with <i class="fas fa-heart"></i> and <i class="fas fa-coffee"></i></p>
+</footer>
+
+<!-- Exam Card Warning Modal -->
+<div id="exam-card-warning-modal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-icon">!</div>
+        <h2>Warning</h2>
+        <p>You need to Evaluate all the Units before printing exam card</p>
+        <button class="modal-ok-btn" onclick="closeModal('exam-card-warning-modal')">OK</button>
+    </div>
+</div>
+
+
+<script>
+const sidebar = document.getElementById("sidebar");
+const themeToggle = document.getElementById('theme-toggle');
+const htmlEl = document.documentElement;
+const wrapper = document.querySelector('.wrapper');
+const footer = document.querySelector('.main-footer-credit');
+const newPasswordInput = document.getElementById('new-password');
+const confirmPasswordInput = document.getElementById('confirm-password');
+const strengthBar = document.getElementById('strength-bar');
+const strengthText = document.getElementById('strength-text');
+const matchText = document.getElementById('match-text');
+const changePasswordBtn = document.getElementById('change-password-btn');
+let passwordStrengthScore = 0;
+
+// --- Theme Switcher Logic ---
+themeToggle.addEventListener('change', () => {
+  htmlEl.classList.toggle('light-theme');
+  localStorage.setItem('theme', themeToggle.checked ? 'light' : 'dark');
+});
+
+function setToggleState() {
+  themeToggle.checked = localStorage.getItem('theme') === 'light';
+}
+
+// --- Layout & Content Logic ---
+function updateLayoutMargin() {
+    const activeSection = document.querySelector('.content-section.active');
+    const isDashboardActive = activeSection && activeSection.id === 'dashboard';
+    const isSidebarActive = sidebar.classList.contains('active');
+    
+    let targetMargin = '0px';
+
+    // Push content on all pages EXCEPT the dashboard, on large screens, when the sidebar is active.
+    if (!isDashboardActive && isSidebarActive && window.innerWidth > 992) {
+        targetMargin = '250px';
+    }
+    
+    wrapper.style.marginLeft = targetMargin;
+    footer.style.marginLeft = targetMargin;
+}
+
+// This function is for the MENU BUTTON CLICK ONLY
+function toggleSidebar() {
+  const isLocked = sidebar.classList.toggle("locked-open");
+  if (isLocked) {
+    sidebar.classList.add("active");
+  } else {
+    sidebar.classList.remove("active");
+  }
+  updateLayoutMargin();
+}
+
+// Hover logic for the DASHBOARD ONLY on desktop
+function handleEdgeHover(e) {
+    const isDashboardActive = document.getElementById('dashboard').classList.contains('active');
+    if (isDashboardActive && window.innerWidth > 992 && !sidebar.classList.contains('locked-open')) {
+        if (e.clientX < 15 && !sidebar.classList.contains('active')) {
+            sidebar.classList.add('active');
+            updateLayoutMargin();
+        }
+    }
+}
+
+function handleSidebarLeave() {
+    const isDashboardActive = document.getElementById('dashboard').classList.contains('active');
+    if (isDashboardActive && window.innerWidth > 992 && !sidebar.classList.contains('locked-open')) {
+        if (sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+            updateLayoutMargin();
+        }
+    }
+}
+
+
+function toggleSubmenu(id) {
+  const submenu = document.getElementById(`submenu-${id}`);
+  const isVisible = submenu.style.display === 'block';
+  // Close all other submenus
+  document.querySelectorAll('.submenu').forEach(el => {
+      if (el.id !== `submenu-${id}`) {
+          el.style.display = 'none';
+      }
+  });
+  submenu.style.display = isVisible ? 'none' : 'block';
+}
+
+function showContent(contentId) {
+    if (contentId === 'exam-cards') {
+        // Example check: openModal('exam-card-warning-modal'); return;
+    }
+
+    document.querySelectorAll('.content-section').forEach(section => {
+        section.classList.remove('active');
+    });
+    const activeSection = document.getElementById(contentId);
+    if (activeSection) {
+        activeSection.classList.add('active');
+    }
+    
+    // If navigating to a non-dashboard page, ensure the sidebar is active and locked.
+    if (contentId !== 'dashboard' && window.innerWidth > 992) {
+        sidebar.classList.add('active', 'locked-open');
+    } else if (contentId === 'dashboard' && window.innerWidth > 992) {
+        // If navigating back to the dashboard, unlock the sidebar
+        sidebar.classList.remove('locked-open');
+    }
+    
+    updateLayoutMargin();
+
+    // On small screens, hide the sidebar after clicking a menu item.
+    if (window.innerWidth < 992 && sidebar.classList.contains('active')) {
+        sidebar.classList.remove('active', 'locked-open');
+        updateLayoutMargin();
+    }
+}
+
+// --- Password Validation Logic ---
+function checkPasswordStrength(password) {
+    let score = 0;
+    if (password.length >= 8) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[a-z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+    return score;
+}
+
+function updatePasswordValidation() {
+    const password = newPasswordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
+
+    passwordStrengthScore = checkPasswordStrength(password);
+    strengthText.className = 'strength-text';
+    if (password.length > 0) {
+      switch (passwordStrengthScore) {
+          case 0: case 1: case 2:
+              strengthBar.style.width = '33%'; strengthBar.style.backgroundColor = '#e74c3c';
+              strengthText.textContent = 'Weak'; strengthText.classList.add('weak'); break;
+          case 3: case 4:
+              strengthBar.style.width = '66%'; strengthBar.style.backgroundColor = '#f39c12';
+              strengthText.textContent = 'Medium'; strengthText.classList.add('medium'); break;
+          case 5:
+              strengthBar.style.width = '100%'; strengthBar.style.backgroundColor = '#2ecc71';
+              strengthText.textContent = 'Strong'; strengthText.classList.add('strong'); break;
+      }
+    } else {
+        strengthBar.style.width = '0%';
+        strengthText.textContent = '';
+    }
+
+    let passwordsMatch = false;
+    matchText.className = 'match-text';
+    confirmPasswordInput.classList.remove('match', 'no-match');
+    if (confirmPassword.length > 0) {
+        if (password === confirmPassword) {
+            matchText.textContent = 'Passwords match'; matchText.classList.add('match');
+            confirmPasswordInput.classList.add('match');
+            passwordsMatch = true;
+        } else {
+            matchText.textContent = 'Passwords do not match'; matchText.classList.add('no-match');
+            confirmPasswordInput.classList.add('no-match');
+        }
+    } else {
+        matchText.textContent = '';
+    }
+
+    changePasswordBtn.disabled = !(passwordStrengthScore >= 3 && passwordsMatch);
+}
+
+// --- Modal Logic ---
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) modal.style.display = 'none';
+}
+
+function logout() {
+  alert("Logging out...");
+}
+
+// --- Timetable Logic ---
+function toggleEdit(icon) {
+    const row = icon.closest('tr');
+    const isEditing = row.classList.toggle('editing');
+    
+    row.querySelectorAll('td:not(:last-child)').forEach(cell => {
+        cell.contentEditable = isEditing;
+    });
+
+    icon.classList.toggle('fa-pencil-alt', !isEditing);
+    icon.classList.toggle('fa-save', isEditing);
+    if(isEditing) {
+        row.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
+    } else {
+        row.style.backgroundColor = ""; // Revert to original
+    }
+}
+
+function deleteRow(icon) {
+    const row = icon.closest('tr');
+    row.remove();
+}
+
+function addRow() {
+    const tableBody = document.getElementById('timetable').querySelector('tbody');
+    const newRow = document.createElement('tr');
+    newRow.innerHTML = `
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>
+            <i class="fas fa-pencil-alt update-icon" onclick="toggleEdit(this)"></i>
+            <i class="fas fa-trash delete-icon" onclick="deleteRow(this)"></i>
+        </td>
+    `;
+    tableBody.appendChild(newRow);
+    toggleEdit(newRow.querySelector('.update-icon')); // Start in editing mode
+}
+
+
+// --- Initial Setup on DOM Load ---
+document.addEventListener('DOMContentLoaded', () => {
+  setToggleState();
+  
+  showContent('dashboard');
+  
+  // Add event listeners for the hover feature
+  document.addEventListener('mousemove', handleEdgeHover);
+  sidebar.addEventListener('mouseleave', handleSidebarLeave);
+  
+  if (newPasswordInput && confirmPasswordInput) {
+      newPasswordInput.addEventListener('input', updatePasswordValidation);
+      confirmPasswordInput.addEventListener('input', updatePasswordValidation);
+  }
+
+  const passwordForm = document.getElementById('password-change-form');
+  if(passwordForm) {
+      passwordForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (!changePasswordBtn.disabled) {
+            alert('Password changed successfully! (This is a simulation)');
+        }
+      });
+  }
+
+  window.onclick = function(event) {
+    if (event.target.classList.contains('modal-overlay')) {
+      event.target.style.display = "none";
+    }
+  }
+});
+
+window.addEventListener('resize', () => {
+    // If resizing to a mobile view, ensure the sidebar is closed and unlocked.
+    if (window.innerWidth <= 992) {
+        sidebar.classList.remove('active', 'locked-open');
+    }
+    // On any resize, just recalculate the margins based on the current state.
+    updateLayoutMargin();
+});
+</script>
+</body>
+</html>
