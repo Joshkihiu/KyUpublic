@@ -26,7 +26,6 @@ This project is a modern, upgraded version of a student dashboard for **Kirinyag
 
 **Dashboard View:**
 ![Dashboard Screenshot](images/dash.png)
-![Sidemenu Screenshot](images/side.png)
 
 <!-- **Mobile View:![Mobile Screenshot]()** -->
 
