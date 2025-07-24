@@ -1159,46 +1159,68 @@ function logout() {
   alert("Logging out...");
 }
 
-// --- Timetable Logic ---
-function toggleEdit(icon) {
-    const row = icon.closest('tr');
-    const isEditing = row.classList.toggle('editing');
-    
-    row.querySelectorAll('td:not(:last-child)').forEach(cell => {
-        cell.contentEditable = isEditing;
-    });
+  // --- Timetable Logic ---
+        function toggleEdit(icon) {
+            const row = icon.closest('tr');
+            if (!row) return;
+            const isEditing = row.classList.toggle('editing');
+            
+            // Toggle contentEditable for all cells except the last one (actions)
+            row.querySelectorAll('td:not(:last-child)').forEach(cell => {
+                cell.contentEditable = isEditing;
+            });
 
-    icon.classList.toggle('fa-pencil-alt', !isEditing);
-    icon.classList.toggle('fa-save', isEditing);
-    if(isEditing) {
-        row.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
-    } else {
-        row.style.backgroundColor = ""; // Revert to original
-    }
-}
+            // Switch icon between 'edit' and 'save'
+            icon.classList.toggle('fa-pencil-alt', !isEditing);
+            icon.classList.toggle('fa-save', isEditing);
 
-function deleteRow(icon) {
-    const row = icon.closest('tr');
-    row.remove();
-}
+            // If we just entered editing mode, focus the first cell
+            if (isEditing) {
+                row.cells[0].focus();
+            }
+        }
 
-function addRow() {
-    const tableBody = document.getElementById('timetable').querySelector('tbody');
-    const newRow = document.createElement('tr');
-    newRow.innerHTML = `
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>
-            <i class="fas fa-pencil-alt update-icon" onclick="toggleEdit(this)"></i>
-            <i class="fas fa-trash delete-icon" onclick="deleteRow(this)"></i>
-        </td>
-    `;
-    tableBody.appendChild(newRow);
-    toggleEdit(newRow.querySelector('.update-icon')); // Start in editing mode
-}
+        function deleteRow(icon) {
+            const row = icon.closest('tr');
+            if (!row) return;
+            // Add a fading animation for a smoother removal
+            row.style.transition = 'opacity 0.3s ease-out';
+            row.style.opacity = '0';
+            setTimeout(() => row.remove(), 300);
+        }
 
+        function addRow() {
+            const tableBody = document.getElementById('timetable').querySelector('tbody');
+            const newRow = tableBody.insertRow(); // Inserts a new row at the end of the table
+
+            // Add cells for data entry
+            for (let i = 0; i < 4; i++) {
+                const cell = newRow.insertCell();
+                cell.contentEditable = true; // Make the new cells editable immediately
+            }
+
+            // Add the actions cell
+            const actionCell = newRow.insertCell();
+            actionCell.style.whiteSpace = 'nowrap';
+
+            // Create Save Icon (starts as a save icon)
+            const saveIcon = document.createElement('i');
+            saveIcon.className = 'fas fa-save update-icon';
+            saveIcon.onclick = () => toggleEdit(saveIcon);
+
+            // Create Delete Icon
+            const deleteIcon = document.createElement('i');
+            deleteIcon.className = 'fas fa-trash delete-icon';
+            deleteIcon.onclick = () => deleteRow(deleteIcon);
+
+            // Append icons to the action cell
+            actionCell.appendChild(saveIcon);
+            actionCell.appendChild(deleteIcon);
+
+            // Set initial state for the new row
+            newRow.classList.add('editing');
+            newRow.cells[0].focus(); // Focus on the first new cell to start typing
+        }
 
 // --- Initial Setup on DOM Load ---
 document.addEventListener('DOMContentLoaded', () => {

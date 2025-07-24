@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timetable Component</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- BASE STYLES --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        /* --- THEME & CARD STYLES --- */
+        :root {
+            --card-bg: rgba(28, 40, 51, 0.7);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --header-text: #e0ffe6;
+            --table-header-color: #90ee90;
+            --table-row-even-bg: rgba(0,0,0,0.1);
+            --view-units-btn-bg: #2980b9;
+            --view-units-btn-hover-bg: #3498db;
+            --sidebar-btn-color: #c9ffd5;
+            --scrollbar-thumb-bg: rgba(255, 255, 255, 0.2);
+            --scrollbar-thumb-hover-bg: rgba(255, 255, 255, 0.4);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid var(--card-border);
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .card-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header h2 {
+            font-size: 1.8rem;
+            color: var(--header-text);
+        }
+
+        /* --- TIMETABLE-SPECIFIC STYLES --- */
+        .timetable-widget {
+            display: flex;
+            flex-direction: column;
+            height: 500px; /* Fixed height for the entire widget */
+        }
+
+        .table-wrapper {
+            overflow: auto; /* Handles both vertical and horizontal scrolling */
+            -webkit-overflow-scrolling: touch;
+            flex-grow: 1; /* Allows the wrapper to fill available vertical space */
+            min-height: 0; /* Important for flex-grow to work in a flex column */
+        }
+        
+        /* --- CUSTOM SCROLLBAR STYLES --- */
+        .table-wrapper::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-track {
+            background: transparent; /* Make track invisible */
+        }
+
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background-color: var(--scrollbar-thumb-bg);
+            border-radius: 10px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-thumb:hover {
+            background-color: var(--scrollbar-thumb-hover-bg);
+        }
+
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            min-width: 600px; /* Ensures horizontal scroll on small screens */
+            table-layout: fixed; /* Ensures columns respect assigned widths */
+        }
+
+        .data-table th, .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--card-border);
+            text-align: left;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        .data-table th {
+            color: var(--table-header-color);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            font-weight: 600;
+            position: sticky; /* Makes header sticky within the scrollable wrapper */
+            top: 0;
+            z-index: 1;
+            background-color: var(--card-bg); /* Prevents text from showing through */
+        }
+
+        /* Defining column widths */
+        #timetable th:nth-of-type(1) { width: 15%; } /* Day */
+        #timetable th:nth-of-type(2) { width: 25%; } /* Time */
+        #timetable th:nth-of-type(3) { width: 20%; } /* Unit */
+        #timetable th:nth-of-type(4) { width: 25%; } /* Venue */
+        #timetable th:nth-of-type(5) { width: 15%; } /* Actions */
+
+
+        .data-table tbody tr:nth-child(even) {
+            background-color: var(--table-row-even-bg);
+        }
+        .data-table tbody tr:last-child td {
+             border-bottom: none;
+        }
+
+        .update-icon, .delete-icon {
+            transition: transform 0.2s ease-in-out, filter 0.2s ease-in-out;
+        }
+
+        .update-icon {
+            color: var(--sidebar-btn-color);
+            cursor: pointer;
+        }
+        .update-icon:hover {
+            transform: scale(1.2);
+            filter: brightness(1.2);
+        }
+
+        .delete-icon {
+            color: #ff4c4c;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .delete-icon:hover {
+            transform: scale(1.2);
+            filter: brightness(1.2);
+        }
+
+        .add-row-btn {
+            padding: 10px 15px;
+            background-color: var(--view-units-btn-bg);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 1rem;
+            align-self: flex-start;
+            flex-shrink: 0; /* Prevents the button from shrinking */
+            transition: background-color 0.2s ease-in-out;
+        }
+        .add-row-btn:hover {
+            background-color: var(--view-units-btn-hover-bg);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="card timetable-widget">
+        <div class="card-header">
+            <h2>Timetable</h2>
+        </div>
+        <div class="table-wrapper">
+            <table id="timetable" class="data-table">
+                <thead>
+                    <tr><th>Day</th><th>Time</th><th>Unit</th><th>Venue</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Mon</td><td>8:00 AM - 10:00 AM</td><td>ICS 2411</td><td>Hall A</td><td><i class="fas fa-pencil-alt update-icon" onclick="toggleEdit(this)"></i><i class="fas fa-trash delete-icon" onclick="deleteRow(this)"></i></td></tr>
+                    <tr><td>Tue</td><td>10:00 AM - 12:00 PM</td><td>ICS 2307</td><td>Lab 2</td><td><i class="fas fa-pencil-alt update-icon" onclick="toggleEdit(this)"></i><i class="fas fa-trash delete-icon" onclick="deleteRow(this)"></i></td></tr>
+                    <tr><td>Wed</td><td>12:00 PM - 2:00 PM</td><td>ICS 2203</td><td>Lab 3</td><td><i class="fas fa-pencil-alt update-icon" onclick="toggleEdit(this)"></i><i class="fas fa-trash delete-icon" onclick="deleteRow(this)"></i></td></tr>
+                    <tr><td>Thu</td><td>9:00 AM - 11:00 AM</td><td>ICS 2210</td><td>Lecture Room 5</td><td><i class="fas fa-pencil-alt update-icon" onclick="toggleEdit(this)"></i><i class="fas fa-trash delete-icon" onclick="deleteRow(this)"></i></td></tr>
+                    <tr><td>Fri</td><td>2:00 PM - 4:00 PM</td><td>ICS 2310</td><td>Lecture Room 2</td><td><i class="fas fa-pencil-alt update-icon" onclick="toggleEdit(this)"></i><i class="fas fa-trash delete-icon" onclick="deleteRow(this)"></i></td></tr>
+                    <tr><td>Fri</td><td>4:00 PM - 6:00 PM</td><td>ICS 2311</td><td>Lab 1</td><td><i class="fas fa-pencil-alt update-icon" onclick="toggleEdit(this)"></i><i class="fas fa-trash delete-icon" onclick="deleteRow(this)"></i></td></tr>
+                    <tr><td>Mon</td><td>2:00 PM - 4:00 PM</td><td>ICS 2201</td><td>Lab 4</td><td><i class="fas fa-pencil-alt update-icon" onclick="toggleEdit(this)"></i><i class="fas fa-trash delete-icon" onclick="deleteRow(this)"></i></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <button class="add-row-btn" onclick="addRow()">Add New Row</button>
+    </div>
+
+    <script>
+        // --- Timetable Logic ---
+        function toggleEdit(icon) {
+            const row = icon.closest('tr');
+            if (!row) return;
+            const isEditing = row.classList.toggle('editing');
+            
+            // Toggle contentEditable for all cells except the last one (actions)
+            row.querySelectorAll('td:not(:last-child)').forEach(cell => {
+                cell.contentEditable = isEditing;
+            });
+
+            // Switch icon between 'edit' and 'save'
+            icon.classList.toggle('fa-pencil-alt', !isEditing);
+            icon.classList.toggle('fa-save', isEditing);
+
+            // If we just entered editing mode, focus the first cell
+            if (isEditing) {
+                row.cells[0].focus();
+            }
+        }
+
+        function deleteRow(icon) {
+            const row = icon.closest('tr');
+            if (!row) return;
+            // Add a fading animation for a smoother removal
+            row.style.transition = 'opacity 0.3s ease-out';
+            row.style.opacity = '0';
+            setTimeout(() => row.remove(), 300);
+        }
+
+        function addRow() {
+            const tableBody = document.getElementById('timetable').querySelector('tbody');
+            const newRow = tableBody.insertRow(); // Inserts a new row at the end of the table
+
+            // Add cells for data entry
+            for (let i = 0; i < 4; i++) {
+                const cell = newRow.insertCell();
+                cell.contentEditable = true; // Make the new cells editable immediately
+            }
+
+            // Add the actions cell
+            const actionCell = newRow.insertCell();
+            actionCell.style.whiteSpace = 'nowrap';
+
+            // Create Save Icon (starts as a save icon)
+            const saveIcon = document.createElement('i');
+            saveIcon.className = 'fas fa-save update-icon';
+            saveIcon.onclick = () => toggleEdit(saveIcon);
+
+            // Create Delete Icon
+            const deleteIcon = document.createElement('i');
+            deleteIcon.className = 'fas fa-trash delete-icon';
+            deleteIcon.onclick = () => deleteRow(deleteIcon);
+
+            // Append icons to the action cell
+            actionCell.appendChild(saveIcon);
+            actionCell.appendChild(deleteIcon);
+
+            // Set initial state for the new row
+            newRow.classList.add('editing');
+            newRow.cells[0].focus(); // Focus on the first new cell to start typing
+        }
+    </script>
+</body>
+</html>
