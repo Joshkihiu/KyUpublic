@@ -25,10 +25,10 @@ This project is a modern, upgraded version of a student dashboard for **Kirinyag
 *Insert screenshots of the dashboard here to showcase the design and features.*
 
 **Dashboard View:**
-![Dashboard Screenshot](images/logo.png)
+![Dashboard Screenshot](images/dash.png)
+![Sidemenu Screenshot](images/side.png)
 
-**Mobile View:**
-![Mobile Screenshot](https://placehold.co/300x500/1c1c1e/ffffff?text=Mobile+View)
+<!-- **Mobile View:![Mobile Screenshot]()** -->
 
 ## 🚀 Setup and Usage
 
