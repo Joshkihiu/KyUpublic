@@ -39,7 +39,7 @@ To run this project on your local machine, follow these steps:
 
 2.  **Navigate to the project directory:**
     ```bash
-    cd [repository-folder-name]
+    cd [KyUpublic]
     ```
 
 3.  **Open the `dashboard.html` file:**
