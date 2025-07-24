@@ -199,7 +199,13 @@ input:checked + .slider:before { transform: translateX(26px); background-image: 
 .view-units-btn:hover { background-color: var(--view-units-btn-hover-bg); }
 .evaluate-btn { background-color: var(--evaluate-btn-bg); color: white; border: none; padding: 0.4rem 1.2rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer; transition: background-color 0.2s; }
 .evaluate-btn:hover { background-color: var(--evaluate-btn-hover-bg); }
-
+.table-wrapper { 
+    overflow-x: auto; 
+    -webkit-overflow-scrolling: touch; 
+}
+.data-table { 
+    min-width: 600px; 
+}
 /* --- FORMS --- */
 .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
 .course-registration-form { display: flex; align-items: flex-end; gap: 1.5rem; flex-wrap: wrap; margin-top: 1rem; }
@@ -468,14 +474,14 @@ input:checked + .slider:before { transform: translateX(26px); background-image: 
                 </div>
                 <div class="profile-right">
                   <div class="profile-details-table">
-                    <div><strong>ID/ Passport:</strong> 42219052</div>
+                    <div><strong>ID/ Passport:</strong> 12345678</div>
                     <div><strong>Full Name:</strong> KIHIU JOSHUA MUHORO</div>
                     <div><strong>Gender:</strong> Male</div>
-                    <div><strong>Date of Birth:</strong> 16/02/2004</div>
+                    <div><strong>Date of Birth:</strong> 01/01/2000</div>
                     <div><strong>Phone Number:</strong> 0114113788</div>
                     <div><strong>Email:</strong> joshuamuhoro58@gmail.com</div>
                     <div><strong>Postal Address:</strong> KIAMBU, GITHIGA IKIN</div>
-                    <div><strong>KyU Email:</strong> joshuamuhoro58@gmail.com</div>
+                    <div><strong>KyU Email:</strong> kihiu.19578@student.kyu.ac.ke</div>
                   </div>
                 </div>
               </div>
@@ -484,9 +490,9 @@ input:checked + .slider:before { transform: translateX(26px); background-image: 
                 <div class="balance-title"><i class="fas fa-wallet"></i> Current Balance</div>
                 <div class="progress-container"><div class="progress-bar"></div></div>
                 <div class="balance-buttons">
-                  <button>Total Billed: KES 120,000</button>
-                  <button>Total Paid: KES 84,000</button>
-                  <button>Current Balance: KES 36,000</button>
+                  <button>Total Billed: KES 306,000</button>
+                  <button>Total Paid: KES 299,000</button>
+                  <button>Current Balance: KES 7,000</button>
                 </div>
                 <div class="pay-buttons">
                   <button><i class="fab fa-cc-visa"></i> Pay with Bank</button>
