@@ -22,7 +22,6 @@ This project is a modern, upgraded version of a student dashboard for **Kirinyag
 
 ## 📸 Screenshots
 
-*Insert screenshots of the dashboard here to showcase the design and features.*
 
 **Dashboard View:**
 ![Dashboard Screenshot](images/dash.png)
@@ -35,17 +34,16 @@ To run this project on your local machine, follow these steps:
 
 1.  **Clone the repository:**
     ```bash
-    git clone [[https://your-repository-url-here.git](https://your-repository-url-here.git)]
+    git clone [[https://your-repository-url-here.git](https://github.com/Joshkihiu/KyUpublic)]
     ```
-    (Replace `[https://your-repository-url-here.git]` with the actual URL of your Git repository.)
 
 2.  **Navigate to the project directory:**
     ```bash
     cd [repository-folder-name]
     ```
 
-3.  **Open the `index.html` file:**
-    Simply open the `index.html` file in any modern web browser (like Chrome, Firefox, or Edge).
+3.  **Open the `dashboard.html` file:**
+    Simply open the `dashboard.html` file in any modern web browser (like Chrome, Firefox, or Edge).
 
 That's it! The dashboard is fully functional locally and requires no server.
 
